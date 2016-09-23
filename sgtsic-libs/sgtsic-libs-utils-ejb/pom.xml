@@ -20,8 +20,8 @@
        </license>
   </licenses>
 
-	<name>sgtsic-libs-utils</name>
-	<description>Módulo Utils de SGTSIC libs</description>
+	<name>sgtsic-libs-utils-ejb</name>
+	<description>Módulo Utils ejb de SGTSIC libs</description>
 	<properties>
 		<version.template.file>../scripts/templates/Version.java.template</version.template.file>
 		<version.file>src/main/java/es/caib/sgtsic-libs/Version.java</version.file>
@@ -84,74 +84,8 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>sgtsic-libs-utils-${project.version}</finalName>
+		<finalName>sgtsic-libs-utils-ejb-${project.version}</finalName>
 		<plugins>
-			<plugin>
-				<groupId>com.google.code.maven-svn-revision-number-plugin</groupId>
-				<artifactId>svn-revision-number-maven-plugin</artifactId>
-				<version>1.13</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>revision</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<entries>
-						<entry>
-							<prefix>svn</prefix> <!-- Crea la variable ${svn.revision} -->
-						</entry>
-					</entries>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.tmatesoft.svnkit</groupId>
-						<artifactId>svnkit</artifactId>
-						<version>1.8.5</version>
-					</dependency>
-					<dependency>
-						<groupId>org.tmatesoft.sqljet</groupId>
-						<artifactId>sqljet</artifactId>
-						<version>1.1.9</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>com.google.code.maven-replacer-plugin</groupId>
-				<artifactId>maven-replacer-plugin</artifactId>
-				<version>1.4.0</version>
-				<executions>
-					<execution>
-						<phase>process-sources</phase>
-						<goals>
-							<goal>replace</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<file>${version.template.file}</file>
-					<outputFile>${version.file}</outputFile>
-					<replacements>
-						<replacement>
-							<token>@project.version@</token>
-							<value>${project.version}</value>
-						</replacement>
-						<replacement>
-							<token>@project.buildtime@</token>
-							<value>${maven.build.timestamp}</value>
-						</replacement>
-						<replacement>
-							<token>@svn.revision@</token>
-							<value>${svn.revision}</value>
-						</replacement>
-						<replacement>
-							<token>@jdk.version@</token>
-							<value>${java.runtime.version}</value>
-						</replacement>
-					</replacements>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

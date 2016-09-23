@@ -19,7 +19,4 @@
 		<module>sgtsic-libs-utils-front</module>
 		<module>sgtsic-libs-utils</module>
 	</modules>
-	<modules>
-		<module>sgtsic-libs-utils</module>
-	</modules>
 </project>

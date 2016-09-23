@@ -7,8 +7,8 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-  <groupId>es.caib.sgtsic.utils</groupId>
-  <artifactId>sgtsic-libs-utils</artifactId>
+  <groupId>es.caib.sgtsic</groupId>
+  <artifactId>sgtsic-libs-utils-back</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -20,8 +20,8 @@
        </license>
   </licenses>
 
-	<name>sgtsic-libs-utils</name>
-	<description>Módulo Utils de SGTSIC libs</description>
+	<name>sgtsic-libs-utils-back</name>
+	<description>Módulo Utils back de SGTSIC libs</description>
 	<properties>
 		<version.template.file>../scripts/templates/Version.java.template</version.template.file>
 		<version.file>src/main/java/es/caib/sgtsic-libs/Version.java</version.file>
@@ -29,39 +29,49 @@
 	</properties>
 	<repositories>
 		<repository>
-			<id>JBoss repository</id>
-			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+			<id>prime-repo</id>
+			<name>PrimeFaces Maven Repository</name>
+			<url>http://repository.primefaces.org</url>
+			<layout>default</layout>
 		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>5.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.primefaces.themes</groupId>
+			<artifactId>ui-lightness</artifactId>
+			<version>1.0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.faces</groupId>
+			<artifactId>jsf-api</artifactId>
+			<version>${jsf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.faces</groupId>
+			<artifactId>jsf-impl</artifactId>
+			<version>${jsf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>es.caib.sgtsic</groupId>
+			<artifactId>sgtsic-libs-utils-ejb</artifactId>
+			<version>${modulo.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>es.caib.sgtsic</groupId>
+			<artifactId>sgtsic-libs-utils</artifactId>
+			<version>${modulo.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.jboss.javaee</groupId>
 			<artifactId>jboss-ejb-api</artifactId>
 			<version>3.0.0.GA</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.javaee</groupId>
-			<artifactId>jboss-jms-api</artifactId>
-			<version>1.1.0.GA</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>jboss.jbossws</groupId>
-			<artifactId>jboss-jaxws</artifactId>
-			<version>3.0.1-native-2.0.4.GA</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>ejb3-persistence</artifactId>
-			<version>1.0.2.GA</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.javaee</groupId>
-			<artifactId>jboss-transaction-api</artifactId>
-			<version>1.0.1.GA</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -71,87 +81,20 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.jboss.ws</groupId>
-			<artifactId>jbossws-spi</artifactId>
-			<version>1.0.6.GA</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.13</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
 	</dependencies>
 	<build>
-		<finalName>sgtsic-libs-utils-${project.version}</finalName>
+		<finalName>sgtsic-libs-utils-back-${project.version}</finalName>
 		<plugins>
-			<plugin>
-				<groupId>com.google.code.maven-svn-revision-number-plugin</groupId>
-				<artifactId>svn-revision-number-maven-plugin</artifactId>
-				<version>1.13</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>revision</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<entries>
-						<entry>
-							<prefix>svn</prefix> <!-- Crea la variable ${svn.revision} -->
-						</entry>
-					</entries>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.tmatesoft.svnkit</groupId>
-						<artifactId>svnkit</artifactId>
-						<version>1.8.5</version>
-					</dependency>
-					<dependency>
-						<groupId>org.tmatesoft.sqljet</groupId>
-						<artifactId>sqljet</artifactId>
-						<version>1.1.9</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>com.google.code.maven-replacer-plugin</groupId>
-				<artifactId>maven-replacer-plugin</artifactId>
-				<version>1.4.0</version>
-				<executions>
-					<execution>
-						<phase>process-sources</phase>
-						<goals>
-							<goal>replace</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<file>${version.template.file}</file>
-					<outputFile>${version.file}</outputFile>
-					<replacements>
-						<replacement>
-							<token>@project.version@</token>
-							<value>${project.version}</value>
-						</replacement>
-						<replacement>
-							<token>@project.buildtime@</token>
-							<value>${maven.build.timestamp}</value>
-						</replacement>
-						<replacement>
-							<token>@svn.revision@</token>
-							<value>${svn.revision}</value>
-						</replacement>
-						<replacement>
-							<token>@jdk.version@</token>
-							<value>${java.runtime.version}</value>
-						</replacement>
-					</replacements>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

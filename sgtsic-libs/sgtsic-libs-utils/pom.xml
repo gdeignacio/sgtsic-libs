@@ -7,7 +7,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-  <groupId>es.caib.sgtsic.utils</groupId>
+  <groupId>es.caib.sgtsic</groupId>
   <artifactId>sgtsic-libs-utils</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -34,54 +34,7 @@
 		</repository>
 	</repositories>
 	<dependencies>
-		<dependency>
-			<groupId>org.jboss.javaee</groupId>
-			<artifactId>jboss-ejb-api</artifactId>
-			<version>3.0.0.GA</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.javaee</groupId>
-			<artifactId>jboss-jms-api</artifactId>
-			<version>1.1.0.GA</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>jboss.jbossws</groupId>
-			<artifactId>jboss-jaxws</artifactId>
-			<version>3.0.1-native-2.0.4.GA</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>ejb3-persistence</artifactId>
-			<version>1.0.2.GA</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.javaee</groupId>
-			<artifactId>jboss-transaction-api</artifactId>
-			<version>1.0.1.GA</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ejb3</groupId>
-			<artifactId>jboss-ejb3-ext-api</artifactId>
-			<version>1.0.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.ws</groupId>
-			<artifactId>jbossws-spi</artifactId>
-			<version>1.0.6.GA</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.13</version>
-			<scope>provided</scope>
-		</dependency>
+
 	</dependencies>
 	<build>
 		<finalName>sgtsic-libs-utils-${project.version}</finalName>
