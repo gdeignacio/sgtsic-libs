@@ -1,4 +1,4 @@
-package es.caib.sgtsic.jsf;
+package es.caib.sgtsic.utils.back;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

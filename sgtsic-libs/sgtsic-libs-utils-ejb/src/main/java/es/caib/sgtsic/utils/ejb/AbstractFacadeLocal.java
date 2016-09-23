@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package es.caib.sgtsic.ejb3;
+package es.caib.sgtsic.utils.ejb;
 
 import java.util.List;
 

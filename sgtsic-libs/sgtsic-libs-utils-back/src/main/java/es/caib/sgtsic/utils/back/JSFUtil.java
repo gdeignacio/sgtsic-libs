@@ -1,4 +1,4 @@
-package es.caib.sgtsic.jsf;
+package es.caib.sgtsic.utils.back;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;

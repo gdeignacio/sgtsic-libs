@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package es.caib.sgtsic.jsf;
+package es.caib.sgtsic.utils.back;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;

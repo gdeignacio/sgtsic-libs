@@ -7,8 +7,8 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-  <groupId>es.caib.sgtsic.utils</groupId>
-  <artifactId>sgtsic-libs-utils</artifactId>
+  <groupId>es.caib.sgtsic</groupId>
+  <artifactId>sgtsic-libs-utils-ejb</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -82,6 +82,13 @@
 			<version>1.2.13</version>
 			<scope>provided</scope>
 		</dependency>
+                <dependency>
+                    <groupId>apache-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                    <version>1.1.0.jboss</version>
+                    <type>jar</type>
+                    <scope>provided</scope>
+                </dependency>
 	</dependencies>
 	<build>
 		<finalName>sgtsic-libs-utils-ejb-${project.version}</finalName>

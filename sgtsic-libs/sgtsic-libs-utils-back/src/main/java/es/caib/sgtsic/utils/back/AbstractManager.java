@@ -1,10 +1,10 @@
-package es.caib.sgtsic.jsf;
+package es.caib.sgtsic.utils.back;
 
 //import es.caib.mataderos.back.manager.SesionManager;
 //import es.caib.mataderos.back.persistence.utils.AbstractFacadeLocal;
 //import static es.caib.mataderos.common.definitions.JNDIValues.getFacadeLocalClassName;
-import es.caib.sgtsic.ejb3.AbstractFacadeLocal;
-import static es.caib.sgtsic.ejb3.JNDI.getFacadeLocalClassName;
+import es.caib.sgtsic.utils.ejb.AbstractFacadeLocal;
+import static es.caib.sgtsic.utils.ejb.JNDI.getFacadeLocalClassName;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
