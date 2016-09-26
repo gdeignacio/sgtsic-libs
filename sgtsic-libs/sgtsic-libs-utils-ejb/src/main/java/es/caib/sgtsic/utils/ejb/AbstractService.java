@@ -1,11 +1,20 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2016 Conselleria de Salut. Govern de les Illes Balears
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package es.caib.sgtsic.utils.ejb;
-
-
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -25,9 +34,9 @@ import org.apache.commons.logging.LogFactory;
  * @author gdeignacio
  * @param <T>
  */
-public abstract class AbstractFacade<T> {
+public abstract class AbstractService<T> {
     
-    protected static Log log = LogFactory.getLog(AbstractFacade.class);
+    protected static Log log = LogFactory.getLog(AbstractService.class);
     
     private final Class<T> entityClass;
     
@@ -36,7 +45,7 @@ public abstract class AbstractFacade<T> {
      *
      * @param entityClass
      */
-    public AbstractFacade(Class<T> entityClass) {
+    public AbstractService(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 
@@ -120,7 +129,7 @@ public abstract class AbstractFacade<T> {
                     isBorrable = isBorrable && ((List) f.get(item)).isEmpty();
                     f.setAccessible(false);
                 } catch (IllegalArgumentException | IllegalAccessException ex) {
-                    Logger.getLogger(AbstractFacade.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AbstractService.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }

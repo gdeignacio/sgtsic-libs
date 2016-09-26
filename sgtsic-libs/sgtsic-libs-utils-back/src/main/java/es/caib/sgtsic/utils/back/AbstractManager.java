@@ -1,9 +1,8 @@
 package es.caib.sgtsic.utils.back;
 
 //import es.caib.mataderos.back.manager.SesionManager;
-//import es.caib.mataderos.back.persistence.utils.AbstractFacadeLocal;
+//import es.caib.mataderos.back.persistence.utils.AbstractServiceInterface;
 //import static es.caib.mataderos.common.definitions.JNDIValues.getFacadeLocalClassName;
-import es.caib.sgtsic.utils.ejb.AbstractFacadeLocal;
 import static es.caib.sgtsic.utils.ejb.JNDI.getFacadeLocalClassName;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -20,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import es.caib.sgtsic.utils.ejb.AbstractServiceInterface;
 
 public abstract class AbstractManager<E> {
 
@@ -28,13 +28,13 @@ public abstract class AbstractManager<E> {
     private static final String GETID = "getId";
 
     private final Class<E> entityClass;
-    private AbstractFacadeLocal<E> localFacadeClass;
+    private AbstractServiceInterface<E> localFacadeClass;
 
     public AbstractManager(Class<E> entityClass) {
         this.entityClass = entityClass;
     }
 
-    protected abstract AbstractFacadeLocal<E> getFacade();
+    protected abstract AbstractServiceInterface<E> getFacade();
     
     //protected SesionManager sesionManager;
 
@@ -257,10 +257,10 @@ public abstract class AbstractManager<E> {
         return key;
     }
 
-    private AbstractFacadeLocal getRelatedFacade(Class relatedEntity) {
+    private AbstractServiceInterface getRelatedFacade(Class relatedEntity) {
 
         String facadeClassName = getFacadeLocalClassName(relatedEntity);
-        AbstractFacadeLocal entityFacade = null;
+        AbstractServiceInterface entityFacade = null;
 
         for (Field mf : this.getClass().getDeclaredFields()) {
 
@@ -268,7 +268,7 @@ public abstract class AbstractManager<E> {
                     && mf.isAnnotationPresent(EJB.class)) {
                 try {
                     mf.setAccessible(true);
-                    entityFacade = (AbstractFacadeLocal) mf.get(this);
+                    entityFacade = (AbstractServiceInterface) mf.get(this);
                     mf.setAccessible(false);
                 } catch (IllegalArgumentException | IllegalAccessException ex) {
                     Logger.getLogger(AbstractManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -303,7 +303,7 @@ public abstract class AbstractManager<E> {
         for (Field f : entityClass.getDeclaredFields()) {
             if (f.isAnnotationPresent(ManyToOne.class)) {
                 String key = f.getName();
-                AbstractFacadeLocal relatedFacade = getRelatedFacade(f.getType());
+                AbstractServiceInterface relatedFacade = getRelatedFacade(f.getType());
                 log.debug("Entramos a lista " + key);
                 listas.put(key, relatedFacade.findAll());
                 if (listas.containsKey(key)) {
