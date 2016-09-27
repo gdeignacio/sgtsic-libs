@@ -16,16 +16,22 @@
 
 package es.caib.sgtsic.utils.ejb;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -37,9 +43,7 @@ import org.apache.commons.logging.LogFactory;
 public abstract class AbstractService<T> {
     
     protected static Log log = LogFactory.getLog(AbstractService.class);
-    
     private final Class<T> entityClass;
-    
     
     /**
      *
@@ -48,22 +52,17 @@ public abstract class AbstractService<T> {
     public AbstractService(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
-
+    
     protected abstract EntityManager getEntityManager();
     
-    
-
     public void create(T entity) {
         getEntityManager().persist(entity);
     }
 
     public void edit(T entity) {
-        
         log.debug("Edit                        "   + getEntityManager() );
         log.debug("Edit                        "   + entity.toString() );
-        
         getEntityManager().merge(entity);
-        
     }
 
     public void remove(T entity) {
@@ -95,6 +94,7 @@ public abstract class AbstractService<T> {
         log.debug("Entramos a childrenCount" + entityChild);
         log.debug("Entramos a childrenCount" + mappedBy);
         
+        
         String namedQueryName = entityChild.getSimpleName() + ".findCountBy" + entityClass.getSimpleName();
 
         int count = ((Long) getEntityManager().createNamedQuery(namedQueryName)
@@ -108,19 +108,19 @@ public abstract class AbstractService<T> {
     }
     
     
-    public T wideFind(Object id){
-    
-        boolean isBorrable=true;
+    public T wideFind(Object id) {
+
+        boolean isBorrable = true;
         T item = this.find(id);
-        
-        if (item == null){
+
+        if (item == null) {
             return item;
         }
-        
+
         for (Field f : entityClass.getDeclaredFields()) {
-            
+
             boolean hasToManyAnnotations = (f.isAnnotationPresent(OneToMany.class))
-                   || (f.isAnnotationPresent(ManyToMany.class));
+                    || (f.isAnnotationPresent(ManyToMany.class));
 
             if (hasToManyAnnotations) {
 
@@ -134,60 +134,136 @@ public abstract class AbstractService<T> {
 
             }
         }
-        
-        
-        
-        
+
         return item;
+    }
+    
+    private List<Field> getMappedFields(){
+    
+        List<Field> lBound = new ArrayList<>();
+        for (Field f: entityClass.getDeclaredFields()){
+            
+            if (f.getAnnotation(OneToMany.class)!=null || f.getAnnotation(ManyToMany.class)!=null){
+                lBound.add(f);
+                continue;
+            }
+            if (f.getAnnotation(OneToOne.class)!=null 
+                    && !"".equals(f.getAnnotation(OneToOne.class).mappedBy())
+                    ){
+                lBound.add(f);
+            }
+        }
+        return lBound;     
+    }
+    
+    private Map<Field, Long> getMappedFieldsCardinal(List<Field> fields){
+        Map<Field, Long> mappedFieldsCardinal = new HashMap<>();
+        
+        for (Field f:fields){
+            Long cardinal = getCardinal(f);
+            if (cardinal == 0) continue; 
+            
+            
+        }
+        
+        return mappedFieldsCardinal;
+    }
+    
+    
+    public boolean disposable(Object id){
+        
+        boolean disposable = true;
+        T item = this.find(id);
+        log.debug("Entramos a disposable" + item);
+        if (item == null) return false;
+        log.debug("Entramos a disposable con no false" + item);
+        
+        List<Field> dependentFields = new ArrayList<>();
+        
+        for (Field f : entityClass.getDeclaredFields()) {
+            
+            Class childEntityClass = null;
+            Annotation a = null;
+            
+            
+            
+            //Class[] aClazz = {OneToMany.class, ManyToMany.class, OneToOne.class};
+            //for (Class clazz:aClazz){
+            //    a = ((a==null)&&(f.getAnnotation(clazz)!=null))?f.getAnnotation(clazz):null;               
+            //}
+            //if (a==null) return true;
+            
+            
+            
+            
+            
+            if (!f.isAnnotationPresent(OneToMany.class) && !f.isAnnotationPresent(ManyToMany.class)) continue;
+            lCheckableFields.add(f);
+            
+            
+            
+        }
+        
+        if (lCheckableFields.isEmpty()) return true;
+        
+        
+        
+        
+        
+        return disposable;
     }
     
     
     public boolean borrable(Object id) {
 
         T item = this.find(id);
-        
+
         log.debug("Entramos a borrable " + item);
-        
-        
+
         if (item == null) {
             return false;
         }
-        
+
         log.debug("Entramos a borrable con no false " + item);
-        
+
         for (Field f : entityClass.getDeclaredFields()) {
             boolean hasToManyAnnotations = (f.isAnnotationPresent(OneToMany.class))
                     || (f.isAnnotationPresent(ManyToMany.class));
             if (hasToManyAnnotations) {
-                
+
                 Type type = f.getGenericType();
                 ParameterizedType pt = (ParameterizedType) type;
-                
+
                 List<Type> arguments = Arrays.asList(pt.getActualTypeArguments());
-                
+
                 Class childEntityClass = null;
-                
-                for (Type argtype: arguments){
+
+                for (Type argtype : arguments) {
                     childEntityClass = (Class) argtype;
                     break;
                 }
-                
-                if (childEntityClass==null) continue;
-                
-                if  (this.childrenCount(id, childEntityClass, entityClass)>0){
-                    
+
+                if (childEntityClass == null) {
+                    continue;
+                }
+
+                if (this.childrenCount(id, childEntityClass, entityClass) > 0) {
+
                     log.debug("Cuenta positiva");
-                    
+
                     return false;
                 }
             }
         }
 
-        
-         log.debug("Cuenta 0");
-        
+        log.debug("Cuenta 0");
+
         return true;
 
     }
-    
+
+    private Long getCardinal(Field f) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

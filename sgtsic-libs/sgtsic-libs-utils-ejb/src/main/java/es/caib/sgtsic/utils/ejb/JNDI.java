@@ -25,7 +25,7 @@ public class JNDI {
     
    // public static final String SECTOR_SANITARIO_FACADE_LOCAL =          
             
-    public static final String unitName = "defaultPU";        
+    //public static final String unitName = "defaultPU";        
     
     /*
     public static final String groupid = "es.caib";
@@ -82,6 +82,11 @@ public class JNDI {
     
     public static String getFacadeLocalClassName(Class entity){
         return entity.getSimpleName() + "FacadeLocal";
+    }
+    
+    
+    public static String getServiceInterfaceClassName(Class entity){
+        return entity.getSimpleName() + "ServiceInterface";
     }
     
     
