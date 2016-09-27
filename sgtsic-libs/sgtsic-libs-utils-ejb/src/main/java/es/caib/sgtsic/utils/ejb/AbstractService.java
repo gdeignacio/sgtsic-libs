@@ -142,7 +142,6 @@ public abstract class AbstractService<T> {
     
         List<Field> lBound = new ArrayList<>();
         for (Field f: entityClass.getDeclaredFields()){
-            
             if (f.getAnnotation(OneToMany.class)!=null || f.getAnnotation(ManyToMany.class)!=null){
                 lBound.add(f);
                 continue;
@@ -156,61 +155,39 @@ public abstract class AbstractService<T> {
         return lBound;     
     }
     
-    private Map<Field, Long> getMappedFieldsCardinal(List<Field> fields){
+    private Map<Field, Long> getMappedFieldsCardinal(T item){
+        
         Map<Field, Long> mappedFieldsCardinal = new HashMap<>();
         
-        for (Field f:fields){
-            Long cardinal = getCardinal(f);
+        for (Field f:getMappedFields()){
+            Long cardinal = getCardinal(item, f);
             if (cardinal == 0) continue; 
-            
-            
+            mappedFieldsCardinal.put(f, cardinal);
         }
         
         return mappedFieldsCardinal;
     }
     
     
+    private Long getCardinal(T item, Field f) {
+       
+      //  "SELECT e FROM CausaDecomisEntity e WHERE e.id = :id"
+        
+        String strQry = "SELECT e FROM CausaDecomisEntity e WHERE e.id = :id";
+        
+        return new Long(0);
+    }
+    
+    
     public boolean disposable(Object id){
         
-        boolean disposable = true;
         T item = this.find(id);
         log.debug("Entramos a disposable" + item);
         if (item == null) return false;
         log.debug("Entramos a disposable con no false" + item);
+        Map<Field, Long> cardinals = getMappedFieldsCardinal(item);
+        return cardinals.keySet().isEmpty();
         
-        List<Field> dependentFields = new ArrayList<>();
-        
-        for (Field f : entityClass.getDeclaredFields()) {
-            
-            Class childEntityClass = null;
-            Annotation a = null;
-            
-            
-            
-            //Class[] aClazz = {OneToMany.class, ManyToMany.class, OneToOne.class};
-            //for (Class clazz:aClazz){
-            //    a = ((a==null)&&(f.getAnnotation(clazz)!=null))?f.getAnnotation(clazz):null;               
-            //}
-            //if (a==null) return true;
-            
-            
-            
-            
-            
-            if (!f.isAnnotationPresent(OneToMany.class) && !f.isAnnotationPresent(ManyToMany.class)) continue;
-            lCheckableFields.add(f);
-            
-            
-            
-        }
-        
-        if (lCheckableFields.isEmpty()) return true;
-        
-        
-        
-        
-        
-        return disposable;
     }
     
     
@@ -262,8 +239,6 @@ public abstract class AbstractService<T> {
 
     }
 
-    private Long getCardinal(Field f) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
 
 }
