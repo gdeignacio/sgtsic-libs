@@ -16,11 +16,9 @@
 
 package es.caib.sgtsic.utils.ejb;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -160,7 +158,7 @@ public abstract class AbstractService<T> {
         Map<Field, Long> mappedFieldsCardinal = new HashMap<>();
         
         for (Field f:getMappedFields()){
-            Long cardinal = getCardinal(item, f);
+            Long cardinal = getMappedFieldCardinal(item, f);
             if (cardinal == 0) continue; 
             mappedFieldsCardinal.put(f, cardinal);
         }
@@ -168,8 +166,38 @@ public abstract class AbstractService<T> {
         return mappedFieldsCardinal;
     }
     
+    private Class getFieldClass(Field f){
+        
+        if (f == null) return null;
+        
+        if (f.getAnnotation(OneToOne.class)!=null){
+            return f.getType();
+        }
+        
+        Type type = f.getGenericType();
+        ParameterizedType pt = (ParameterizedType) type;
+        
+        if (pt.getActualTypeArguments().length == 0) return null;
+        
+        return (Class)pt.getActualTypeArguments()[0];
+       
     
-    private Long getCardinal(T item, Field f) {
+    }
+    
+    
+    
+    
+    private Long getMappedFieldCardinal(T item, Field f) {
+        
+        Class entityChildClass = getFieldClass(f);
+        
+        
+        
+        
+        
+        String qry = "select count(o) from " + entityChildClass.getSimpleName() + 
+                " o where ";
+        
        
       //  "SELECT e FROM CausaDecomisEntity e WHERE e.id = :id"
         
