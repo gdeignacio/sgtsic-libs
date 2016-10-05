@@ -24,7 +24,7 @@
     <description>Módulo Utils ejb de SGTSIC libs</description>
     <properties>
         <version.template.file>../scripts/templates/Version.java.template</version.template.file>
-        <version.file>src/main/java/es/caib/sgtsic-libs/Version.java</version.file>
+        <version.file>src/main/java/es/caib/sgtsic/Version.java</version.file>
         <maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
     </properties>
     <repositories>

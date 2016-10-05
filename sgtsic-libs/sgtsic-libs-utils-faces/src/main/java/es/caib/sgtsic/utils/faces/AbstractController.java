@@ -1,4 +1,4 @@
-package es.caib.sgtsic.utils.back;
+package es.caib.sgtsic.utils.faces;
 
 //import es.caib.mataderos.back.manager.SesionManager;
 //import es.caib.mataderos.back.persistence.utils.AbstractServiceInterface;
@@ -21,16 +21,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import es.caib.sgtsic.utils.ejb.AbstractServiceInterface;
 
-public abstract class AbstractManager<E> {
+public abstract class AbstractController<E> {
 
-    protected static Log log = LogFactory.getLog(AbstractManager.class);
+    protected static Log log = LogFactory.getLog(AbstractController.class);
+    
+    
     
     private static final String GETID = "getId";
 
     private final Class<E> entityClass;
     private AbstractServiceInterface<E> localFacadeClass;
 
-    public AbstractManager(Class<E> entityClass) {
+    public AbstractController(Class<E> entityClass) {
         this.entityClass = entityClass;
     }
 
@@ -251,7 +253,7 @@ public abstract class AbstractManager<E> {
             key = m.invoke(current, (Object[]) null);
             
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            Logger.getLogger(AbstractManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return key;
@@ -271,7 +273,7 @@ public abstract class AbstractManager<E> {
                     entityFacade = (AbstractServiceInterface) mf.get(this);
                     mf.setAccessible(false);
                 } catch (IllegalArgumentException | IllegalAccessException ex) {
-                    Logger.getLogger(AbstractManager.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -290,7 +292,7 @@ public abstract class AbstractManager<E> {
                     f.set(current, f.getType().newInstance());
                     f.setAccessible(false);
                 } catch (InstantiationException | IllegalAccessException ex) {
-                    Logger.getLogger(AbstractManager.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
@@ -332,7 +334,7 @@ public abstract class AbstractManager<E> {
                     listaDetalle = (List) f.get(current);
                     f.setAccessible(false);
                 } catch (IllegalArgumentException | IllegalAccessException ex) {
-                    Logger.getLogger(AbstractManager.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 listasDetalle.put(key, listaDetalle);
                 if (listasDetalle.containsKey(key)) {

@@ -6,7 +6,7 @@
         <artifactId>sgtsic-libs</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>sgtsic-libs-utils-back</artifactId>
+    <artifactId>sgtsic-libs-utils-faces</artifactId>
     <packaging>jar</packaging>
 
     <licenses>
@@ -17,11 +17,11 @@
         </license>
     </licenses>
 
-    <name>sgtsic-libs-utils-back</name>
+    <name>sgtsic-libs-utils-faces</name>
     <description>Módulo Utils back de SGTSIC libs</description>
     <properties>
         <version.template.file>../scripts/templates/Version.java.template</version.template.file>
-        <version.file>src/main/java/es/caib/sgtsic-libs/Version.java</version.file>
+        <version.file>src/main/java/es/caib/sgtsic/Version.java</version.file>
         <maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
     </properties>
     <repositories>

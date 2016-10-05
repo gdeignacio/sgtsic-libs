@@ -15,8 +15,8 @@
 	<modules>
 		<module>sgtsic-libs-utils-api</module>
 		<module>sgtsic-libs-utils-ejb</module>
-		<module>sgtsic-libs-utils-back</module>
 		<module>sgtsic-libs-utils-front</module>
 		<module>sgtsic-libs-utils</module>
+	 <module>sgtsic-libs-utils-faces</module>
 	</modules>
 </project>
