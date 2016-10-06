@@ -97,7 +97,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>sgtsic-libs-utils-back-${project.version}</finalName>
+        <finalName>sgtsic-libs-utils-faces-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

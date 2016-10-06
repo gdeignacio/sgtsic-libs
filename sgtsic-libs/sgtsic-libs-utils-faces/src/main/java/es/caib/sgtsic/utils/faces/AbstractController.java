@@ -25,18 +25,16 @@ public abstract class AbstractController<E> {
 
     protected static Log log = LogFactory.getLog(AbstractController.class);
     
-    
-    
     private static final String GETID = "getId";
 
     private final Class<E> entityClass;
-    private AbstractServiceInterface<E> localFacadeClass;
+    private AbstractServiceInterface<E> serviceInterfaceClass;
 
     public AbstractController(Class<E> entityClass) {
         this.entityClass = entityClass;
     }
 
-    protected abstract AbstractServiceInterface<E> getFacade();
+    protected abstract AbstractServiceInterface<E> getService();
     
     //protected SesionManager sesionManager;
 
@@ -163,7 +161,7 @@ public abstract class AbstractController<E> {
 
     public void populateLista() {
         log.debug("Entramos a lista " + entityClass.getSimpleName());
-        lista = getFacade().findAll();
+        lista = getService().findAll();
         log.debug("SIZE LISTA " + entityClass.getSimpleName() + " " + lista.size());
     }
 
@@ -176,14 +174,14 @@ public abstract class AbstractController<E> {
         
         
         
-        getFacade().edit(current);
+        getService().edit(current);
         populateLista();
         JSFUtil.clearSubmittedValues(component);
         editadoOk = true;
     }
 
     public void edit(Object key) {
-        current = getFacade().wideFind(key);
+        current = getService().wideFind(key);
         if (current == null) {
             return;
         }
@@ -192,7 +190,7 @@ public abstract class AbstractController<E> {
     }
     
     public void narrowEdit(Object key){
-        current = getFacade().find(key);
+        current = getService().find(key);
         if (current == null) {
             return;
         }
@@ -204,7 +202,7 @@ public abstract class AbstractController<E> {
         if (current == null) {
             return;
         }
-        getFacade().remove(current);
+        getService().remove(current);
         populateLista();
         JSFUtil.addMessage(entityClass.getSimpleName(),"Eliminado");
         current = null;
@@ -234,7 +232,7 @@ public abstract class AbstractController<E> {
        
        if (key==null) return false;
        
-       boolean esBorrable = getFacade().borrable(key);
+       boolean esBorrable = getService().borrable(key);
        
        log.debug("Es borrable  " + esBorrable);
        
