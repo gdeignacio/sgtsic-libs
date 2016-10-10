@@ -16,6 +16,7 @@
 
 package es.caib.sgtsic.utils.ejb;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -28,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import org.apache.commons.logging.Log;
@@ -136,6 +138,43 @@ public abstract class AbstractService<T> {
         return item;
     }
     
+    public void contar(){
+        
+        for (Field f:entityClass.getDeclaredFields()){
+            
+        }
+    
+        
+    }
+    
+    private Class<?> getTargetEntity(Field f){
+        
+        if (f.getAnnotation(OneToMany.class)!=null){
+            return f.getAnnotation(OneToMany.class).targetEntity();
+        }
+        if (f.getAnnotation(ManyToMany.class)!=null){
+            return f.getAnnotation(ManyToMany.class).targetEntity();
+        }
+        if (f.getAnnotation(OneToOne.class)!=null){
+            return f.getAnnotation(OneToOne.class).targetEntity();
+        }
+        return null;
+    }
+    
+        private String getMapping(Field f){
+        
+        if (f.getAnnotation(OneToMany.class)!=null){
+            return f.getAnnotation(OneToMany.class).mappedBy();
+        }
+        if (f.getAnnotation(ManyToMany.class)!=null){
+            return f.getAnnotation(ManyToMany.class).mappedBy();
+        }
+        if (f.getAnnotation(OneToOne.class)!=null){
+            return f.getAnnotation(OneToOne.class).mappedBy();
+        }
+        return null;
+    }
+    
     private List<Field> getMappedFields(){
     
         List<Field> lBound = new ArrayList<>();
@@ -166,9 +205,16 @@ public abstract class AbstractService<T> {
         return mappedFieldsCardinal;
     }
     
+    /*
     private Class getFieldClass(Field f){
         
         if (f == null) return null;
+        
+        if (f.getAnnotation(OneToOne.class)!=null){
+            if (f.getAnnotation(OneToOne.class).targetEntity())
+        }
+        
+        //f.getAnnotation(OneToOne.class).targetEntity();
         
         if (f.getAnnotation(OneToOne.class)!=null){
             return f.getType();
@@ -182,7 +228,7 @@ public abstract class AbstractService<T> {
         return (Class)pt.getActualTypeArguments()[0];
        
     
-    }
+    }*/
     
     
     
@@ -191,6 +237,9 @@ public abstract class AbstractService<T> {
         
         Class entityChildClass = getFieldClass(f);
         
+        String mappedField = "";
+        
+       // f.getAnnotation(OneToMany.class).mappedBy()
         
         
         
