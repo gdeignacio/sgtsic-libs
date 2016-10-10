@@ -18,8 +18,8 @@ public abstract class AbstractSessionController {
     // INIT ------
     public String idioma;
     public String html;
-    public String end;
-    private AbstractManager manager;
+    //public String end;
+    private AbstractController controller;
 
 
     // CONSTRUCTOR -----
@@ -97,35 +97,35 @@ public abstract class AbstractSessionController {
         FacesContext.getCurrentInstance().getViewRoot().setLocale(new Locale(idioma));
     }
 
-    
-    
-    public AbstractManager getManager() {
-        return manager;
+    public AbstractController getController() {
+        return controller;
     }
 
-    public void setManager(AbstractManager manager) {
-        this.manager = manager;
+    public void setController(AbstractController controller) {
+        this.controller = controller;
     }
 
-
+    
+    
+    
     public String getCustomValue(String nameValue){
         
         if (nameValue==null) return "";
-        String customValue = nameValue + this.manager.getClass().getSimpleName();
+        String customValue = nameValue + this.controller.getClass().getSimpleName();
         return customValue;
         
     }
     
     public String getCustomBtn(String nameValue){
         if (nameValue==null) return "";
-        String managerName = this.manager.getClass().getSimpleName();
+        String managerName = this.controller.getClass().getSimpleName();
         String customValue = "btn" + nameValue + managerName;
         return customValue;
     }
     
     public String getCustomEditForm(String nameValue){
         if (nameValue==null) return "";
-        String managerName = this.manager.getClass().getSimpleName();
+        String managerName = this.controller.getClass().getSimpleName();
         String customValue = "btn" + nameValue + managerName;
         return customValue;
     }
