@@ -16,7 +16,6 @@
 
 package es.caib.sgtsic.utils.ejb;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -29,7 +28,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import org.apache.commons.logging.Log;
@@ -94,15 +92,13 @@ public abstract class AbstractService<T> {
         log.debug("Entramos a childrenCount" + entityChild);
         log.debug("Entramos a childrenCount" + mappedBy);
         
-        
         String namedQueryName = entityChild.getSimpleName() + ".findCountBy" + entityClass.getSimpleName();
 
         int count = ((Long) getEntityManager().createNamedQuery(namedQueryName)
                 .setParameter("id" + mappedBy.getSimpleName(), id)
                 .getSingleResult()).intValue();
         
-        
-         log.debug("Entramos a childrenCount resultado" + count);
+        log.debug("Entramos a childrenCount resultado" + count);
 
         return count;
     }
@@ -138,41 +134,34 @@ public abstract class AbstractService<T> {
         return item;
     }
     
-    public void contar(){
-        
-        for (Field f:entityClass.getDeclaredFields()){
-            
-        }
+   
     
-        
-    }
-    
-    private Class<?> getTargetEntity(Field f){
-        
-        if (f.getAnnotation(OneToMany.class)!=null){
+    private Class<?> getTargetEntity(Field f) {
+
+        if (f.getAnnotation(OneToMany.class) != null) {
             return f.getAnnotation(OneToMany.class).targetEntity();
         }
-        if (f.getAnnotation(ManyToMany.class)!=null){
+        if (f.getAnnotation(ManyToMany.class) != null) {
             return f.getAnnotation(ManyToMany.class).targetEntity();
         }
-        if (f.getAnnotation(OneToOne.class)!=null){
+        if (f.getAnnotation(OneToOne.class) != null) {
             return f.getAnnotation(OneToOne.class).targetEntity();
         }
         return null;
     }
-    
-        private String getMapping(Field f){
-        
-        if (f.getAnnotation(OneToMany.class)!=null){
+
+    private String getMapping(Field f) {
+
+        if (f.getAnnotation(OneToMany.class) != null) {
             return f.getAnnotation(OneToMany.class).mappedBy();
         }
-        if (f.getAnnotation(ManyToMany.class)!=null){
+        if (f.getAnnotation(ManyToMany.class) != null) {
             return f.getAnnotation(ManyToMany.class).mappedBy();
         }
-        if (f.getAnnotation(OneToOne.class)!=null){
+        if (f.getAnnotation(OneToOne.class) != null) {
             return f.getAnnotation(OneToOne.class).mappedBy();
         }
-        return null;
+        return "";
     }
     
     private List<Field> getMappedFields(){
@@ -192,12 +181,12 @@ public abstract class AbstractService<T> {
         return lBound;     
     }
     
-    private Map<Field, Long> getMappedFieldsCardinal(T item){
+    private Map<Field, Long> getMappedFieldsCardinal(Object id){
         
         Map<Field, Long> mappedFieldsCardinal = new HashMap<>();
         
         for (Field f:getMappedFields()){
-            Long cardinal = getMappedFieldCardinal(item, f);
+            Long cardinal = getMappedFieldCardinal(id, f);
             if (cardinal == 0) continue; 
             mappedFieldsCardinal.put(f, cardinal);
         }
@@ -233,26 +222,21 @@ public abstract class AbstractService<T> {
     
     
     
-    private Long getMappedFieldCardinal(T item, Field f) {
+    private Long getMappedFieldCardinal(Object id, Field f) {
         
-        Class entityChildClass = getFieldClass(f);
+        Class entityChildClass = getTargetEntity(f);
+        String mappedField = getMapping(f);
         
-        String mappedField = "";
-        
-       // f.getAnnotation(OneToMany.class).mappedBy()
-        
-        
-        
-        
+        if ((entityChildClass==null) || "".equals(mappedField)) return new Long(0);
+         
         String qry = "select count(o) from " + entityChildClass.getSimpleName() + 
-                " o where ";
-        
+                " o where o." + mappedField + " = :id";
        
-      //  "SELECT e FROM CausaDecomisEntity e WHERE e.id = :id"
-        
-        String strQry = "SELECT e FROM CausaDecomisEntity e WHERE e.id = :id";
-        
-        return new Long(0);
+        long count = ((Long)getEntityManager().createQuery(qry)
+                .setParameter("id", id)
+                .getSingleResult()).longValue();
+            
+        return new Long(count);
     }
     
     
