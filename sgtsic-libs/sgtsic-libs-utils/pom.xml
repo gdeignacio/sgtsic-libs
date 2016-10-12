@@ -82,6 +82,27 @@
             <type>jar</type>
         </dependency>
         
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.13</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.directwebremoting</groupId>
+            <artifactId>dwr</artifactId>
+            <version>3.0.M1</version>
+        </dependency>
+        
+ 
+        
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>6.0</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <build>
         <finalName>sgtsic-libs-utils-${project.version}</finalName>
