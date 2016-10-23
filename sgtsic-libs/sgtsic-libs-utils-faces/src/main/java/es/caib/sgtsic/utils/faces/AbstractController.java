@@ -20,8 +20,22 @@ import javax.persistence.OneToMany;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import es.caib.sgtsic.utils.ejb.AbstractServiceInterface;
+import java.util.Arrays;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.persistence.OneToOne;
 
 public abstract class AbstractController<E> {
+    
+    private final static List<String> VALID_COLUMN_KEYS = new ArrayList<>(); //Arrays.asList("id", "brand", "year", "color", "price");
+     
+    private String columnTemplate = ""; //id brand year";
+     
+    private List<ColumnModel> columns;
+    
+    
+    
+    
 
     protected static Log log = LogFactory.getLog(AbstractController.class);
     
@@ -39,6 +53,9 @@ public abstract class AbstractController<E> {
     //protected SesionManager sesionManager;
 
     private List<E> lista;
+    private List<E> listaFiltrada;
+
+   
     private E current;
     private boolean editadoOk;
     private String id;
@@ -98,7 +115,29 @@ public abstract class AbstractController<E> {
         this.confirmMsg = confirmMsg;
     }
     
-    
+     public String getColumnTemplate() {
+        return columnTemplate;
+    }
+
+    public void setColumnTemplate(String columnTemplate) {
+        this.columnTemplate = columnTemplate;
+    }
+
+    public List<ColumnModel> getColumns() {
+        return columns;
+    }
+
+    public void setColumns(List<ColumnModel> columns) {
+        this.columns = columns;
+    }
+
+    public List<E> getListaFiltrada() {
+        return listaFiltrada;
+    }
+
+    public void setListaFiltrada(List<E> listaFiltrada) {
+        this.listaFiltrada = listaFiltrada;
+    }
     
 
     public void inicio() {
@@ -113,8 +152,53 @@ public abstract class AbstractController<E> {
         //this.borrable = false;
         populateLista();
         populateListas();
+        
+        createDynamicColumns();
+        
     }
 
+    /*
+    
+      private void createDynamicColumns() {
+        String[] columnKeys = columnTemplate.split(" ");
+        columns = new ArrayList<>();   
+         
+        for(String columnKey : columnKeys) {
+            String key = columnKey.trim();
+             
+            if(VALID_COLUMN_KEYS.contains(key)) {
+                columns.add(new ColumnModel(columnKey.toUpperCase(), columnKey));
+            }
+        }
+    }
+    
+    */
+    
+    
+    private void createDynamicColumns() {
+        
+        for (Field f:this.entityClass.getFields()){
+            if (f.isAnnotationPresent(OneToMany.class)) continue;
+            if (f.isAnnotationPresent(OneToOne.class)) continue;
+            if (f.isAnnotationPresent(ManyToMany.class)) continue;
+            if (f.isAnnotationPresent(ManyToOne.class)) continue;
+            columns.add(new ColumnModel(f.getName().toUpperCase(), f.getName()));
+        }
+        
+    }
+     
+    public void updateColumns(String component) {
+        
+        //":form:cars"
+        //reset table state
+        UIComponent table = FacesContext.getCurrentInstance().getViewRoot().findComponent(component);
+        table.setValueExpression("sortBy", null);
+         
+        //update columns
+        createDynamicColumns();
+    }
+    
+    
     public List<E> getLista() {
         return lista;
     }
