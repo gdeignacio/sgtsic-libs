@@ -178,10 +178,12 @@ public abstract class AbstractController<E> {
     private void createDynamicColumns() {
         
         for (Field f:this.entityClass.getFields()){
-            if (f.isAnnotationPresent(OneToMany.class)) continue;
-            if (f.isAnnotationPresent(OneToOne.class)) continue;
-            if (f.isAnnotationPresent(ManyToMany.class)) continue;
-            if (f.isAnnotationPresent(ManyToOne.class)) continue;
+           // if (f.isAnnotationPresent(OneToMany.class)) continue;
+           // if (f.isAnnotationPresent(OneToOne.class)) continue;
+           // if (f.isAnnotationPresent(ManyToMany.class)) continue;
+           // if (f.isAnnotationPresent(ManyToOne.class)) continue;
+            
+            log.debug(f.getName());
             columns.add(new ColumnModel(f.getName().toUpperCase(), f.getName()));
         }
         
