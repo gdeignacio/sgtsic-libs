@@ -20,10 +20,9 @@ import javax.persistence.OneToMany;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import es.caib.sgtsic.utils.ejb.AbstractServiceInterface;
-import java.util.Arrays;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.persistence.OneToOne;
+import javax.persistence.Column;
 
 public abstract class AbstractController<E> {
     
@@ -141,6 +140,8 @@ public abstract class AbstractController<E> {
     
 
     public void inicio() {
+        
+        createDynamicColumns();
         this.editadoOk = false;
         this.current = null;
         this.lista = new ArrayList<>();
@@ -153,7 +154,7 @@ public abstract class AbstractController<E> {
         populateLista();
         populateListas();
         
-        createDynamicColumns();
+        
         
     }
 
@@ -177,17 +178,35 @@ public abstract class AbstractController<E> {
     
     private void createDynamicColumns() {
         
-        for (Field f:this.entityClass.getFields()){
-           // if (f.isAnnotationPresent(OneToMany.class)) continue;
-           // if (f.isAnnotationPresent(OneToOne.class)) continue;
-           // if (f.isAnnotationPresent(ManyToMany.class)) continue;
-           // if (f.isAnnotationPresent(ManyToOne.class)) continue;
-            
-            log.debug(f.getName());
+        columns = new ArrayList<>();   
+        for (Field f: entityClass.getDeclaredFields()){
+            if (!f.isAnnotationPresent(Column.class)) continue;
             columns.add(new ColumnModel(f.getName().toUpperCase(), f.getName()));
+        } 
+    }
+    
+    public List<ColumnModel> getDynamicColumns(){
+        
+        List<ColumnModel> c = new ArrayList<>();
+        for (Field f: entityClass.getDeclaredFields()){
+            c.add(new ColumnModel(f.getName().toUpperCase(), f.getName()));
         }
+        return c;
         
     }
+    
+    public List<ColumnModel> getDynamicFields(){
+        
+        List<ColumnModel> c = new ArrayList<>();
+        for (Field f: entityClass.getDeclaredFields()){
+            c.add(new ColumnModel(f.getName().toUpperCase(), f.getName()));
+        }
+        return c;
+        
+    }
+    
+     
+
      
     public void updateColumns(String component) {
         
