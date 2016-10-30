@@ -152,7 +152,7 @@ public abstract class AbstractController<E> {
         this.confirmMsg = new HashMap<>();
         //this.borrable = false;
         populateLista();
-        populateListas();
+        //populateListas();
         
         
         
@@ -275,7 +275,7 @@ public abstract class AbstractController<E> {
     }
 
     public void save(String component) {
-        log.debug("EDITAR ACTION");
+        log.debug("EDITAR ACTION en "  + component);
         
         
         
