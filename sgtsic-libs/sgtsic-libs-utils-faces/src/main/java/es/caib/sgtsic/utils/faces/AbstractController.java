@@ -19,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import es.caib.sgtsic.utils.ejb.AbstractServiceInterface;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.persistence.Column;
 
 public abstract class AbstractController<E> {
@@ -137,11 +138,7 @@ public abstract class AbstractController<E> {
         
         createDynamicColumns();
         this.editadoOk = false;
-        try {
-            this.current = entityClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        this.current = null;
         this.lista = new ArrayList<>();
         this.listas = new HashMap<>();
         this.listasDetalle = new HashMap<>();
@@ -322,6 +319,9 @@ public abstract class AbstractController<E> {
         current = null;
     }
 
+  
+    
+    
     public void nuevo() throws InstantiationException, IllegalAccessException {
         current = entityClass.newInstance();
         //initManyToOne();
