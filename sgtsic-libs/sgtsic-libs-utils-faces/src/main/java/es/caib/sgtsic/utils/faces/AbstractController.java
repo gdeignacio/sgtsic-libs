@@ -1,8 +1,5 @@
 package es.caib.sgtsic.utils.faces;
 
-//import es.caib.mataderos.back.manager.SesionManager;
-//import es.caib.mataderos.back.persistence.utils.AbstractServiceInterface;
-//import static es.caib.mataderos.common.definitions.JNDIValues.getFacadeLocalClassName;
 import static es.caib.sgtsic.utils.ejb.JNDI.getFacadeLocalClassName;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -32,9 +29,7 @@ public abstract class AbstractController<E> {
      
     private List<ColumnModel> columns;
     
-    
-    
-    
+    private List<ColumnModel> inputFields;
 
     protected static Log log = LogFactory.getLog(AbstractController.class);
     
@@ -54,7 +49,6 @@ public abstract class AbstractController<E> {
     private List<E> lista;
     private List<E> listaFiltrada;
 
-   
     private E current;
     private boolean editadoOk;
     private String id;
@@ -143,7 +137,11 @@ public abstract class AbstractController<E> {
         
         createDynamicColumns();
         this.editadoOk = false;
-        this.current = null;
+        try {
+            this.current = entityClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.lista = new ArrayList<>();
         this.listas = new HashMap<>();
         this.listasDetalle = new HashMap<>();
@@ -265,20 +263,27 @@ public abstract class AbstractController<E> {
     
 
     public void populateLista() {
+        log.debug("---------------------------------------------------------------------------------------------------");
         log.debug("Entramos a lista " + entityClass.getSimpleName());
+        log.debug("---------------------------------------------------------------------------------------------------");
         lista = getService().findAll();
+        log.debug("---------------------------------------------------------------------------------------------------");
         log.debug("SIZE LISTA " + entityClass.getSimpleName() + " " + lista.size());
+        log.debug("---------------------------------------------------------------------------------------------------");
     }
 
     public void loadEditar() {
         editadoOk = false;
     }
 
+    public void debug(){
+        log.debug("----------------------------------------------------------------------------debug message");
+    }
+    
     public void save(String component) {
-        log.debug("EDITAR ACTION en "  + component);
         
-        
-        
+        log.debug("---------------------------------------------------------------------------SAVE ACTION en "  + component);
+       
         getService().edit(current);
         populateLista();
         JSFUtil.clearSubmittedValues(component);
@@ -286,11 +291,15 @@ public abstract class AbstractController<E> {
     }
 
     public void edit(Object key) {
-        current = getService().wideFind(key);
-        if (current == null) {
-            return;
-        }
-        populateListasDetalle();
+        
+        log.debug("---------------------------------------------------------------------------EDITAR ACTION "  + key.toString());
+        
+        current = getService().find(key);
+        //current = getService().wideFind(key);
+        //if (current == null) {
+        //    return;
+        //}
+        //populateListasDetalle();
         //populateBorrable();
     }
     
@@ -315,7 +324,7 @@ public abstract class AbstractController<E> {
 
     public void nuevo() throws InstantiationException, IllegalAccessException {
         current = entityClass.newInstance();
-        initManyToOne();
+        //initManyToOne();
         //borrable = false;
     }
 
