@@ -323,7 +323,17 @@ public abstract class AbstractController<E> {
     
     
     public void nuevo() throws InstantiationException, IllegalAccessException {
+        log.debug("---------------------------------------------------------------------------------------------------");
+        log.debug("Nuevo " + entityClass.getSimpleName());
+        log.debug("---------------------------------------------------------------------------------------------------");
+        
         current = entityClass.newInstance();
+        
+        log.debug("---------------------------------------------------------------------------------------------------");
+        log.debug("Creado " + current.getClass().getCanonicalName());
+        log.debug("---------------------------------------------------------------------------------------------------");
+        
+        
         //initManyToOne();
         //borrable = false;
     }
