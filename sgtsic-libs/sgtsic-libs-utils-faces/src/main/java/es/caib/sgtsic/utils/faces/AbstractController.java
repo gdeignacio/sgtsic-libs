@@ -17,90 +17,32 @@ import javax.persistence.OneToMany;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import es.caib.sgtsic.utils.ejb.AbstractServiceInterface;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.persistence.Column;
 
 public abstract class AbstractController<E> {
     
-    private final static List<String> VALID_COLUMN_KEYS = new ArrayList<>(); //Arrays.asList("id", "brand", "year", "color", "price");
-     
-    private String columnTemplate = ""; //id brand year";
-     
-    private List<ColumnModel> columns;
-    
-    private List<ColumnModel> inputFields;
-
     protected static Log log = LogFactory.getLog(AbstractController.class);
     
     private static final String GETID = "getId";
 
     private final Class<E> entityClass;
-    private AbstractServiceInterface<E> serviceInterfaceClass;
-
+    private final TableModel<E> tableModel;
+    private final DataModel<E> dataModel;
+    
     public AbstractController(Class<E> entityClass) {
         this.entityClass = entityClass;
+        this.tableModel = new TableModel<>(entityClass);
+        this.dataModel = new DataModel<>(entityClass);
     }
-
+    
+    private AbstractServiceInterface<E> serviceInterfaceClass;
+    
     protected abstract AbstractServiceInterface<E> getService();
     
-    //protected SesionManager sesionManager;
-
-    private List<E> lista;
-    private List<E> listaFiltrada;
-
-    private E current;
-    private boolean editadoOk;
-    private String id;
-    //private boolean borrable;
+    public abstract void load();
+    
     private Map<String, String> confirmMsg;
    
-    
-    private Map<String, List> listas;
-    private Map<String, List> listasDetalle;
-    private Object currentDetalle;
-    
-   
-    public Object getCurrentDetalle() {
-        return currentDetalle;
-    }
-
-    public void setCurrentDetalle(Object currentDetalle) {
-        this.currentDetalle = currentDetalle;
-    }
-
-    public List getListaDetalle(String key){
-        return listasDetalle.get(key);
-    }
-    
-    public Map<String, List> getListasDetalle() {
-        return listasDetalle;
-    }
-
-    public void setListasDetalle(Map<String, List> listasDetalle) {
-        this.listasDetalle = listasDetalle;
-    }
-    private Map<String, Object> idsListas;
-
-    public Map<String, Object> getIdsListas() {
-        return idsListas;
-    }
-
-    public void setIdsListas(Map<String, Object> idsListas) {
-        this.idsListas = idsListas;
-    }
-
-    public Map<String, List> getListas() {
-        return listas;
-    }
-
-    public void setListas(Map<String, List> listas) {
-        this.listas = listas;
-    }
-    
-   
-
     public Map<String, String> getConfirmMsg() {
         return confirmMsg;
     }
@@ -109,34 +51,13 @@ public abstract class AbstractController<E> {
         this.confirmMsg = confirmMsg;
     }
     
-     public String getColumnTemplate() {
-        return columnTemplate;
-    }
-
-    public void setColumnTemplate(String columnTemplate) {
-        this.columnTemplate = columnTemplate;
-    }
-
-    public List<ColumnModel> getColumns() {
-        return columns;
-    }
-
-    public void setColumns(List<ColumnModel> columns) {
-        this.columns = columns;
-    }
-
-    public List<E> getListaFiltrada() {
-        return listaFiltrada;
-    }
-
-    public void setListaFiltrada(List<E> listaFiltrada) {
-        this.listaFiltrada = listaFiltrada;
-    }
+    
     
 
     public void inicio() {
         
-        createDynamicColumns();
+        
+        
         this.editadoOk = false;
         this.current = null;
         this.lista = new ArrayList<>();
@@ -153,83 +74,8 @@ public abstract class AbstractController<E> {
         
     }
 
-    /*
-    
-      private void createDynamicColumns() {
-        String[] columnKeys = columnTemplate.split(" ");
-        columns = new ArrayList<>();   
-         
-        for(String columnKey : columnKeys) {
-            String key = columnKey.trim();
-             
-            if(VALID_COLUMN_KEYS.contains(key)) {
-                columns.add(new ColumnModel(columnKey.toUpperCase(), columnKey));
-            }
-        }
-    }
-    
-    */
-    
-    
-    private void createDynamicColumns() {
-        
-        columns = new ArrayList<>();   
-        for (Field f: entityClass.getDeclaredFields()){
-            if (!f.isAnnotationPresent(Column.class)) continue;
-            columns.add(new ColumnModel(f.getName().toUpperCase(), f.getName()));
-        } 
-    }
-    
-    public List<ColumnModel> getDynamicColumns(){
-        
-        List<ColumnModel> c = new ArrayList<>();
-        for (Field f: entityClass.getDeclaredFields()){
-            c.add(new ColumnModel(f.getName().toUpperCase(), f.getName()));
-        }
-        return c;
-        
-    }
-    
-    public List<ColumnModel> getDynamicFields(){
-        
-        List<ColumnModel> c = new ArrayList<>();
-        for (Field f: entityClass.getDeclaredFields()){
-            c.add(new ColumnModel(f.getName().toUpperCase(), f.getName()));
-        }
-        return c;
-        
-    }
-    
-     
-
-     
-    public void updateColumns(String component) {
-        
-        //":form:cars"
-        //reset table state
-        UIComponent table = FacesContext.getCurrentInstance().getViewRoot().findComponent(component);
-        table.setValueExpression("sortBy", null);
-         
-        //update columns
-        createDynamicColumns();
-    }
-    
-    
-    public List<E> getLista() {
-        return lista;
-    }
-
-    public void setLista(List<E> lista) {
-        this.lista = lista;
-    }
-
-    public E getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(E current) {
-        this.current = current;
-    }
+   
+   
 
     public boolean isEditadoOk() {
         return editadoOk;
@@ -247,27 +93,12 @@ public abstract class AbstractController<E> {
         this.id = id;
     }
     
-    /*
-    public void setSesionManager(SesionManager sesionManager){
-        this.sesionManager = sesionManager;
-    }
     
-    public SesionManager getSesionManager(){
-        return sesionManager;
-    }*/
     
-    public abstract void load();
+   
     
 
-    public void populateLista() {
-        log.debug("---------------------------------------------------------------------------------------------------");
-        log.debug("Entramos a lista " + entityClass.getSimpleName());
-        log.debug("---------------------------------------------------------------------------------------------------");
-        lista = getService().findAll();
-        log.debug("---------------------------------------------------------------------------------------------------");
-        log.debug("SIZE LISTA " + entityClass.getSimpleName() + " " + lista.size());
-        log.debug("---------------------------------------------------------------------------------------------------");
-    }
+ 
 
     public void loadEditar() {
         editadoOk = false;
@@ -277,15 +108,7 @@ public abstract class AbstractController<E> {
         log.debug("----------------------------------------------------------------------------debug message");
     }
     
-    public void save(String component) {
-        
-        log.debug("---------------------------------------------------------------------------SAVE ACTION en "  + component);
-       
-        getService().edit(current);
-        populateLista();
-        JSFUtil.clearSubmittedValues(component);
-        editadoOk = true;
-    }
+    
 
     public void edit(Object key) {
         
@@ -322,20 +145,18 @@ public abstract class AbstractController<E> {
   
     
     
-    public void nuevo() throws InstantiationException, IllegalAccessException {
-        log.debug("---------------------------------------------------------------------------------------------------");
-        log.debug("Nuevo " + entityClass.getSimpleName());
-        log.debug("---------------------------------------------------------------------------------------------------");
+    
+    
+    public void create(ActionEvent actionEvent) {
         
-        current = entityClass.newInstance();
-        
-        log.debug("---------------------------------------------------------------------------------------------------");
-        log.debug("Creado " + current.getClass().getCanonicalName());
-        log.debug("---------------------------------------------------------------------------------------------------");
-        
-        
-        //initManyToOne();
-        //borrable = false;
+        try {
+            dataModel.create(entityClass);
+            
+            //initManyToOne();
+            //borrable = false;
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     //public void populateBorrable(Object key) {
