@@ -1,48 +1,51 @@
 package es.caib.sgtsic.utils.faces;
 
-import static es.caib.sgtsic.utils.ejb.JNDI.getFacadeLocalClassName;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import es.caib.sgtsic.utils.ejb.AbstractServiceInterface;
 import javax.faces.event.ActionEvent;
 
 public abstract class AbstractController<E> {
-    
+
     protected static Log log = LogFactory.getLog(AbstractController.class);
-    
+
     private static final String GETID = "getId";
 
     private final Class<E> entityClass;
-    private final TableModel<E> tableModel;
-    private final DataModel<E> dataModel;
-    
+
+    private TableModel<E> tableModel;
+    private DataModel<E> dataModel;    
+    private Map<String, String> confirmMsg;
+
+
     public AbstractController(Class<E> entityClass) {
         this.entityClass = entityClass;
-        this.tableModel = new TableModel<>(entityClass);
-        this.dataModel = new DataModel<>(entityClass);
+    }
+
+    protected abstract AbstractServiceInterface<E> getService();
+
+    public abstract void load();
+
+    public TableModel<E> getTableModel() {
+        return tableModel;
+    }
+
+    public void setTableModel(TableModel<E> tableModel) {
+        this.tableModel = tableModel;
+    }
+
+    public DataModel<E> getDataModel() {
+        return dataModel;
+    }
+
+    public void setDataModel(DataModel<E> dataModel) {
+        this.dataModel = dataModel;
     }
     
-    private AbstractServiceInterface<E> serviceInterfaceClass;
-    
-    protected abstract AbstractServiceInterface<E> getService();
-    
-    public abstract void load();
-    
-    private Map<String, String> confirmMsg;
-   
+
     public Map<String, String> getConfirmMsg() {
         return confirmMsg;
     }
@@ -50,242 +53,41 @@ public abstract class AbstractController<E> {
     public void setConfirmMsg(Map<String, String> confirmMsg) {
         this.confirmMsg = confirmMsg;
     }
-    
-    
-    
 
     public void inicio() {
-        
-        
-        
-        this.editadoOk = false;
-        this.current = null;
-        this.lista = new ArrayList<>();
-        this.listas = new HashMap<>();
-        this.listasDetalle = new HashMap<>();
-        this.currentDetalle = null;
-        this.idsListas = new HashMap<>();
-        this.confirmMsg = new HashMap<>();
-        //this.borrable = false;
-        populateLista();
-        //populateListas();
-        
-        
-        
+        this.tableModel = new TableModel<>(entityClass);
+        this.dataModel = new DataModel<>(entityClass);
+        this.dataModel.setService(this.getService());
     }
 
-   
-   
-
-    public boolean isEditadoOk() {
-        return editadoOk;
+    public void debug(ActionEvent actionEvent) {
+        log.debug("---------------------------------------------------------------------------");
+        log.debug("A DEBUG MESSAGE: " + actionEvent.toString());
+        log.debug("---------------------------------------------------------------------------");
     }
 
-    public void setEditadoOk(boolean editadoOk) {
-        this.editadoOk = editadoOk;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-    
-    
-    
-   
-    
-
- 
-
-    public void loadEditar() {
-        editadoOk = false;
-    }
-
-    public void debug(){
-        log.debug("----------------------------------------------------------------------------debug message");
-    }
-    
-    
-
-    public void edit(Object key) {
-        
-        log.debug("---------------------------------------------------------------------------EDITAR ACTION "  + key.toString());
-        
-        current = getService().find(key);
-        //current = getService().wideFind(key);
-        //if (current == null) {
-        //    return;
-        //}
-        //populateListasDetalle();
-        //populateBorrable();
-    }
-    
-    public void narrowEdit(Object key){
-        current = getService().find(key);
-        if (current == null) {
-            return;
-        }
-    }
-    
-
-    public void delete() {
-        log.debug("delete " + entityClass.getSimpleName());
-        if (current == null) {
-            return;
-        }
-        getService().remove(current);
-        populateLista();
-        JSFUtil.addMessage(entityClass.getSimpleName(),"Eliminado");
-        current = null;
-    }
-
-  
-    
-    
-    
-    
     public void create(ActionEvent actionEvent) {
-        
+        debug(actionEvent);
         try {
-            dataModel.create(entityClass);
-            
-            //initManyToOne();
-            //borrable = false;
+            dataModel.create();
         } catch (InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    //public void populateBorrable(Object key) {
-    //    long clave = (long) key;
-    //    borrable = true;
-    //    //borrable = (current != null && clave != 0) ? getFacade().borrable(clave) : false;
-    //}
-    
-    
-   public void populateConfirmMsg(String header, String message){
-       this.confirmMsg.put("HEADER", header);
-       this.confirmMsg.put("MESSAGE", message);
-   }
-
-   public boolean itemIsBorrable() {
-       
-       Object key = getCurrentId();
-       
-       if (key==null) return false;
-       
-       boolean esBorrable = getService().borrable(key);
-       
-       log.debug("Es borrable  " + esBorrable);
-       
-       return esBorrable;
-       
-   }
-    
-    private Object getCurrentId(){
-        
-        if (current==null) return null;
-        
-        Object key = null;
-        
-        try {
-            Method m = entityClass.getMethod(GETID);
-            key = m.invoke(current, (Object[]) null);
-            
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return key;
+    public void retrieve(ActionEvent actionEvent) {
+        debug(actionEvent);
+        dataModel.find();
     }
 
-    private AbstractServiceInterface getRelatedFacade(Class relatedEntity) {
-
-        String facadeClassName = getFacadeLocalClassName(relatedEntity);
-        AbstractServiceInterface entityFacade = null;
-
-        for (Field mf : this.getClass().getDeclaredFields()) {
-
-            if (facadeClassName.equals(mf.getType().getSimpleName())
-                    && mf.isAnnotationPresent(EJB.class)) {
-                try {
-                    mf.setAccessible(true);
-                    entityFacade = (AbstractServiceInterface) mf.get(this);
-                    mf.setAccessible(false);
-                } catch (IllegalArgumentException | IllegalAccessException ex) {
-                    Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-        return entityFacade;
+    public void update(ActionEvent actionEvent) {
+        debug(actionEvent);
+        dataModel.edit();
     }
 
-    private void initManyToOne() {
-        
-        if (current==null) return;
-        
-        for (Field f : entityClass.getDeclaredFields()) {
-            if (f.isAnnotationPresent(ManyToOne.class)) {
-
-                try {
-                    f.setAccessible(true);
-                    f.set(current, f.getType().newInstance());
-                    f.setAccessible(false);
-                } catch (InstantiationException | IllegalAccessException ex) {
-                    Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            }
-        }
-
-    }
-
-    private void populateListas() {
-
-        for (Field f : entityClass.getDeclaredFields()) {
-            if (f.isAnnotationPresent(ManyToOne.class)) {
-                String key = f.getName();
-                AbstractServiceInterface relatedFacade = getRelatedFacade(f.getType());
-                log.debug("Entramos a lista " + key);
-                listas.put(key, relatedFacade.findAll());
-                if (listas.containsKey(key)) {
-                    log.debug("SIZE LISTA " + key + " " + listas.get(key).size());
-                }
-            }
-        }
-
-    }
-
-    private void populateListasDetalle() {
-        
-        if (current==null) return;
-
-        for (Field f : entityClass.getDeclaredFields()) {
-
-            boolean hasToManyAnnotations = (f.isAnnotationPresent(OneToMany.class))
-                    || (f.isAnnotationPresent(ManyToMany.class));
-
-            if (hasToManyAnnotations) {
-                String key = f.getName();
-                List listaDetalle = null;
-                log.debug("Entramos a lista " + key);
-                try {
-                    f.setAccessible(true);
-                    listaDetalle = (List) f.get(current);
-                    f.setAccessible(false);
-                } catch (IllegalArgumentException | IllegalAccessException ex) {
-                    Logger.getLogger(AbstractController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                listasDetalle.put(key, listaDetalle);
-                if (listasDetalle.containsKey(key)) {
-                    log.debug("SIZE LISTA " + key + " " + listasDetalle.get(key).size());
-                }
-            }
-        }
-
+    public void delete(ActionEvent actionEvent) {
+        debug(actionEvent);
+        dataModel.remove();
     }
 
 }

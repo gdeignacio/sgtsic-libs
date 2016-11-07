@@ -39,8 +39,28 @@ public class DataModel<E> implements Serializable {
         this.current = null;
         this.id = null;
         this.entityClass = entityClass;
+        
+        /*
+        
+        this.editadoOk = false;
+        this.current = null;
+        this.lista = new ArrayList<>();
+        this.listas = new HashMap<>();
+        this.listasDetalle = new HashMap<>();
+        this.currentDetalle = null;
+        this.idsListas = new HashMap<>();
+        this.confirmMsg = new HashMap<>();
+        //this.borrable = false;
+        populateLista();
+        //populateListas();
+        
+        
+        */
+        
+        
     }
     
+    private AbstractServiceInterface<E> service;
     private final Class<E> entityClass;
     private List<E> allItems;
     private List<E> filteredItems;
@@ -99,19 +119,15 @@ public class DataModel<E> implements Serializable {
         this.id = id;
     }
 
-    public void create(Class<E> clazz) throws InstantiationException, IllegalAccessException{
-        
-        log.debug("---------------------------------------------------------------------------------------------------");
-        log.debug("Nuevo " + clazz.getSimpleName());
-        log.debug("---------------------------------------------------------------------------------------------------");
-        this.current = clazz.newInstance();
-        log.debug("---------------------------------------------------------------------------------------------------");
-        log.debug("Creado " + this.current.getClass().getCanonicalName());
-        log.debug("---------------------------------------------------------------------------------------------------");
-        
+    public AbstractServiceInterface<E> getService() {
+        return service;
     }
-    
-    public void populateLista(AbstractServiceInterface<E> service) {
+
+    public void setService(AbstractServiceInterface<E> service) {
+        this.service = service;
+    }
+
+    public void populateLista() {
         
         log.debug("---------------------------------------------------------------------------------------------------");
         log.debug("Entramos a lista " + entityClass.getSimpleName());
@@ -123,7 +139,20 @@ public class DataModel<E> implements Serializable {
     
     }
     
-    public void edit(AbstractServiceInterface<E> service) {
+    
+    public void create() throws InstantiationException, IllegalAccessException{
+        
+        log.debug("---------------------------------------------------------------------------------------------------");
+        log.debug("Nuevo " + entityClass.getSimpleName());
+        log.debug("---------------------------------------------------------------------------------------------------");
+        this.current = entityClass.newInstance();
+        log.debug("---------------------------------------------------------------------------------------------------");
+        log.debug("Creado " + this.current.getClass().getCanonicalName());
+        log.debug("---------------------------------------------------------------------------------------------------");
+        
+    }
+    
+    public void edit() {
         
         log.debug("---------------------------------------------------------------------------------------------------");
         log.debug("Guardando " + current.getClass().getSimpleName() + " "  +  current.toString());
@@ -135,17 +164,21 @@ public class DataModel<E> implements Serializable {
         log.debug("Guardado " + current.getClass().getSimpleName() + " "  +  current.toString());
         log.debug("---------------------------------------------------------------------------------------------------");
         
-        populateLista(service);
+        populateLista();
        
     }
     
-    public void find(AbstractServiceInterface<E> service) {
+    public void find() {
         
         log.debug("---------------------------------------------------------------------------------------------------");
-        log.debug("Recuperando " + current.getClass().getSimpleName() + " "  +  current.toString());
+        log.debug("Recuperando " + entityClass.getSimpleName());
         log.debug("---------------------------------------------------------------------------------------------------");
        
         this.current = service.find(this.id);
+        
+        if (current == null) {
+            return;
+        }
         
         log.debug("---------------------------------------------------------------------------------------------------");
         log.debug("Recuperado " + current.getClass().getSimpleName() + " "  +  current.toString());
@@ -153,8 +186,7 @@ public class DataModel<E> implements Serializable {
        
     }
     
-    
-    public void remove(AbstractServiceInterface<E> service) {
+    public void remove() {
         
         if (current == null) {
             return;
@@ -171,7 +203,7 @@ public class DataModel<E> implements Serializable {
         log.debug("Borrado ");
         log.debug("---------------------------------------------------------------------------------------------------");
        
-        populateLista(service);
+        populateLista();
     }
  
     
