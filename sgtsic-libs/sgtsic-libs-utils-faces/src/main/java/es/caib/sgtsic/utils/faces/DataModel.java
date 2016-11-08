@@ -29,16 +29,19 @@ import org.apache.commons.logging.LogFactory;
  * @param <E>
  */
 
-public class DataModel<E> implements Serializable {
+public final class DataModel<E> implements Serializable {
     
     protected static Log log = LogFactory.getLog(DataModel.class);
     
-    public DataModel(Class<E> entityClass) { 
+    public DataModel(Class<E> entityClass, AbstractServiceInterface<E> service) { 
         this.allItems = new ArrayList<>();
         this.filteredItems = new ArrayList<>();
         this.current = null;
-        this.id = null;
+        this.id = new Long(0);
         this.entityClass = entityClass;
+        this.service = service;
+        
+        populateLista();
         
         /*
         
@@ -60,7 +63,7 @@ public class DataModel<E> implements Serializable {
         
     }
     
-    private AbstractServiceInterface<E> service;
+    private final AbstractServiceInterface<E> service;
     private final Class<E> entityClass;
     private List<E> allItems;
     private List<E> filteredItems;
@@ -119,28 +122,20 @@ public class DataModel<E> implements Serializable {
         this.id = id;
     }
 
-    public AbstractServiceInterface<E> getService() {
-        return service;
-    }
-
-    public void setService(AbstractServiceInterface<E> service) {
-        this.service = service;
-    }
-
-    public void populateLista() {
+    protected void populateLista() {
         
         log.debug("---------------------------------------------------------------------------------------------------");
         log.debug("Entramos a lista " + entityClass.getSimpleName());
         log.debug("---------------------------------------------------------------------------------------------------");
         this.allItems = service.findAll();
         log.debug("---------------------------------------------------------------------------------------------------");
-        log.debug("SIZE LISTA " + entityClass.getSimpleName() + " " + allItems.size());
+        log.debug("SIZE LISTA " + allItems.getClass().getCanonicalName() + " " + allItems.size());
         log.debug("---------------------------------------------------------------------------------------------------");
     
     }
     
     
-    public void create() throws InstantiationException, IllegalAccessException{
+    protected void create() throws InstantiationException, IllegalAccessException{
         
         log.debug("---------------------------------------------------------------------------------------------------");
         log.debug("Nuevo " + entityClass.getSimpleName());
@@ -152,7 +147,7 @@ public class DataModel<E> implements Serializable {
         
     }
     
-    public void edit() {
+    protected void edit() {
         
         log.debug("---------------------------------------------------------------------------------------------------");
         log.debug("Guardando " + current.getClass().getSimpleName() + " "  +  current.toString());
@@ -168,10 +163,10 @@ public class DataModel<E> implements Serializable {
        
     }
     
-    public void find() {
+    protected void find() {
         
         log.debug("---------------------------------------------------------------------------------------------------");
-        log.debug("Recuperando " + entityClass.getSimpleName());
+        log.debug("Recuperando " + entityClass.getSimpleName() + " id:" + this.id.toString());
         log.debug("---------------------------------------------------------------------------------------------------");
        
         this.current = service.find(this.id);
@@ -186,7 +181,7 @@ public class DataModel<E> implements Serializable {
        
     }
     
-    public void remove() {
+    protected void remove() {
         
         if (current == null) {
             return;

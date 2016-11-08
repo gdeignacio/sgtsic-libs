@@ -56,8 +56,7 @@ public abstract class AbstractController<E> {
 
     public void inicio() {
         this.tableModel = new TableModel<>(entityClass);
-        this.dataModel = new DataModel<>(entityClass);
-        this.dataModel.setService(this.getService());
+        this.dataModel = new DataModel<>(entityClass, this.getService());
     }
 
     public void debug(ActionEvent actionEvent) {
