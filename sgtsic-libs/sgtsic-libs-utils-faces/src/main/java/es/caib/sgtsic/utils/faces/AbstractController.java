@@ -59,14 +59,14 @@ public abstract class AbstractController<E> {
         this.dataModel = new DataModel<>(entityClass, this.getService());
     }
 
-    public void debug(ActionEvent actionEvent) {
+    public void debug() {
         log.debug("---------------------------------------------------------------------------");
-        log.debug("A DEBUG MESSAGE: " + actionEvent.toString());
+        log.debug("A DEBUG MESSAGE: " );
         log.debug("---------------------------------------------------------------------------");
     }
 
-    public void create(ActionEvent actionEvent) {
-        debug(actionEvent);
+    public void create() {
+        debug();
         try {
             dataModel.create();
         } catch (InstantiationException | IllegalAccessException ex) {
@@ -74,18 +74,18 @@ public abstract class AbstractController<E> {
         }
     }
 
-    public void retrieve(ActionEvent actionEvent) {
-        debug(actionEvent);
+    public void retrieve() {
+        debug();
         dataModel.find();
     }
 
-    public void update(ActionEvent actionEvent) {
-        debug(actionEvent);
+    public void update() {
+        debug();
         dataModel.edit();
     }
 
-    public void delete(ActionEvent actionEvent) {
-        debug(actionEvent);
+    public void delete() {
+        debug();
         dataModel.remove();
     }
 

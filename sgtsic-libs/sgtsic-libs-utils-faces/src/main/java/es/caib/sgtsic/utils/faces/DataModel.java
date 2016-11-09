@@ -129,7 +129,7 @@ public final class DataModel<E> implements Serializable {
         log.debug("---------------------------------------------------------------------------------------------------");
         this.allItems = service.findAll();
         log.debug("---------------------------------------------------------------------------------------------------");
-        log.debug("SIZE LISTA " + allItems.getClass().getCanonicalName() + " " + allItems.size());
+        log.debug("SIZE LISTA " + allItems.size());
         log.debug("---------------------------------------------------------------------------------------------------");
     
     }
