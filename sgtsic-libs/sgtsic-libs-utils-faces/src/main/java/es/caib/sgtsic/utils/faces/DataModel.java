@@ -40,9 +40,7 @@ public final class DataModel<E> implements Serializable {
         this.id = new Long(0);
         this.entityClass = entityClass;
         this.service = service;
-        
-        populateLista();
-        
+    
         /*
         
         this.editadoOk = false;
@@ -120,6 +118,11 @@ public final class DataModel<E> implements Serializable {
 
     public void setId(Object id) {
         this.id = id;
+    }
+    
+    
+    public void init(){
+        populateLista();
     }
 
     protected void populateLista() {

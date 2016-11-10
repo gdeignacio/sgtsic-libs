@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import es.caib.sgtsic.utils.ejb.AbstractServiceInterface;
-import javax.faces.event.ActionEvent;
 
 public abstract class AbstractController<E> {
 
@@ -65,6 +64,10 @@ public abstract class AbstractController<E> {
         log.debug("---------------------------------------------------------------------------");
     }
 
+    public void clean(){
+        JSFUtil.clearSubmittedValues("");
+    }
+    
     public void create() {
         debug();
         try {
