@@ -7,9 +7,38 @@ import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.util.Iterator;
 import javax.faces.application.FacesMessage;
+import javax.faces.event.ActionEvent;
+import org.apache.commons.logging.Log;
 
 public class JSFUtil implements Serializable {
+    
+   
 
+    public static void clearSubmittedValues(ActionEvent actionEvent) {
+
+        UIComponent uiComponent = actionEvent.getComponent();
+
+        if (uiComponent == null) {
+            return;
+        }
+        if ("javax.faces.Form".equals(uiComponent.getRendererType())) {
+            clearSubmittedValues(uiComponent);
+            return;
+        }
+        FacesContext context = FacesContext.getCurrentInstance();
+        UIViewRoot viewRoot = context.getViewRoot();
+        while (uiComponent != viewRoot) {
+            uiComponent = uiComponent.getParent();
+
+            if ("javax.faces.Form".equals(uiComponent.getRendererType())) {
+
+                clearSubmittedValues(uiComponent);
+                return;
+            }
+        }
+    }
+    
+    
     public static void clearSubmittedValues(String formName) {
         FacesContext context = FacesContext.getCurrentInstance();
         UIViewRoot view = context.getViewRoot();

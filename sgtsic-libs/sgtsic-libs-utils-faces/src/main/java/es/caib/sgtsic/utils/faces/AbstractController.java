@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import es.caib.sgtsic.utils.ejb.AbstractServiceInterface;
+import javax.faces.event.ActionEvent;
 
 public abstract class AbstractController<E> {
 
@@ -16,10 +17,10 @@ public abstract class AbstractController<E> {
     private final Class<E> entityClass;
 
     private TableModel<E> tableModel;
-    private DataModel<E> dataModel;    
+    private DataModel<E> dataModel;
+    private FormModel<E> formModel;
     private Map<String, String> confirmMsg;
-
-
+    
     public AbstractController(Class<E> entityClass) {
         this.entityClass = entityClass;
     }
@@ -55,6 +56,7 @@ public abstract class AbstractController<E> {
 
     public void inicio() {
         this.tableModel = new TableModel<>(entityClass);
+        this.formModel = new FormModel<>(entityClass);
         this.dataModel = new DataModel<>(entityClass, this.getService());
     }
 
@@ -64,8 +66,8 @@ public abstract class AbstractController<E> {
         log.debug("---------------------------------------------------------------------------");
     }
 
-    public void clean(){
-        JSFUtil.clearSubmittedValues("");
+    public void clean(ActionEvent actionEvent){
+        JSFUtil.clearSubmittedValues(actionEvent);
     }
     
     public void create() {
