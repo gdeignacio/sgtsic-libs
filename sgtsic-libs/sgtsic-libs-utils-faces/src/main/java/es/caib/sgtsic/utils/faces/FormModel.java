@@ -17,8 +17,10 @@ package es.caib.sgtsic.utils.faces;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import javax.faces.component.UIComponent;
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -91,5 +93,7 @@ public class FormModel<E> implements Serializable {
         }
         return dynamicFields;    
     }
+    
+    
     
 }
