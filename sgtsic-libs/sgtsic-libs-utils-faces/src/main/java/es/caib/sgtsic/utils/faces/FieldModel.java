@@ -23,27 +23,33 @@ import java.io.Serializable;
  */
 public class FieldModel implements Serializable {
     
-        private String label;
-        private String property;
-        private Class clazz;
- 
-        public FieldModel(String label, String property, Class clazz) {
-            this.label = label;
-            this.property = property;
-            this.clazz = clazz;
-        }
-       
-        public String getHeader() {
-            return label;
-        }
- 
-        public String getProperty() {
-            return property;
-        }
+    private String label;
+    private String property;
+    private Class clazz;
+    private String type;
+
+    public FieldModel(String label, String property, Class clazz) {
+        this.label = label;
+        this.property = property;
+        this.clazz = clazz;
+    }
+
+    public String getHeader() {
+        return label;
+    }
+
+    public String getProperty() {
+        return property;
+    }
+
+    public Class getClazz() {
+        return clazz;
+    }
+
+    public String getType() {
+        return type;
+    }
+
         
-        public Class getClazz(){
-            return clazz;
-        }
-    
         
 }
